@@ -1,0 +1,58 @@
+#include <Servo.h>
+
+// pin connections
+const int servoPin = 7;
+const int trigPin = 9;
+const int echoPin = 10;
+
+float duration;      // variable to store pulse duration
+float distanceCM;    // variable to store distance in cm
+float distanceIN;    // variable to store distance in inches
+
+Servo myServo; // create servo object
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  myServo.attach(servoPin);
+}
+
+void loop() {
+  // Send ultrasonic pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Read echo
+  duration = pulseIn(echoPin, HIGH);
+
+  // Calculate distance
+  distanceCM = duration * 0.034 / 2;
+  distanceIN = duration * 0.0133 / 2;
+
+  Serial.print("Distance (cm): ");
+  Serial.print(distanceCM);
+  Serial.print("   Distance (in): ");
+  Serial.println(distanceIN);
+
+  // Example: move servo based on distance
+  if (distanceCM <= 10) {
+    myServo.write(0);   // rotate servo to 0 degrees
+  } else if (distanceCM < 20) {
+    myServo.write(90);  // rotate servo to 90 degrees
+  } else {
+    myServo.write(180); // rotate servo to 180 degrees
+  }
+
+if (distanceCM <= 6) {
+    myServo.write(90);   // rotate servo to 0 degrees
+  // rotate servo to 90 degrees
+  } else {
+    myServo.write(0); // rotate servo to 180 degrees
+  }
+
+  delay(500);
+}
