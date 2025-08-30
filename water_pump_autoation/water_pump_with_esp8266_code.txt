@@ -1,0 +1,39 @@
+// Control Water Pump Using Blynk 2.0
+#define BLYNK_TEMPLATE_ID "TMPL3beeIwuV3"
+#define BLYNK_TEMPLATE_NAME "test"
+#define BLYNK_AUTH_TOKEN "5HxDUtxBcCR-WVHj_uRLSVxUUbcNNh3m"
+
+#define BLYNK_PRINT Serial
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "RH-2.4G-9F3B30";  // Your WiFi name
+char pass[] = "44953B9F3B30";    // Your WiFi password
+
+int relaypin = D2;  // D2 = GPIO4 on ESP8266
+
+void setup() {
+  Serial.begin(115200);
+  Blynk.begin(auth, ssid, pass);
+  pinMode(relaypin, OUTPUT);
+  digitalWrite(relaypin, HIGH); // Relay OFF by default
+}
+
+BLYNK_WRITE(V0) {
+  int value = param.asInt();
+  Serial.print("Received from Blynk: ");
+  Serial.println(value);
+
+  if (value == 1) {
+    digitalWrite(relaypin, LOW);  // Relay ON
+  } else {
+    digitalWrite(relaypin, HIGH); // Relay OFF
+  }
+}
+
+void loop() {
+  Blynk.run();
+  
+}
